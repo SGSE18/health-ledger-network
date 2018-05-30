@@ -28,7 +28,7 @@ $ ./teardown.sh
 ```
 
 ## Certificates
-In order to interact with the hyperledger network, each user needs a private key
+For the interaction with the hyperledger network, each user needs a private key
 and a corresponding certificate signed by an hyperledger peer certificate
 authority.
 
@@ -40,7 +40,7 @@ and will be used to sign new participants for the network. The Fabric Framework
 requires a private key generated with the elliptic curve algorithm.
 
 ### New user work flow
-In Order to create a new key and a certificate signed by the
+In Order to create a new key and a certificate, signed by the
 `mainorg.health-ledger.de` organization, we can leverage the `openssl` command
 line tool.
 
@@ -62,8 +62,8 @@ line tool.
   certificate authority.
 
 
-To automate this work flow there is a `newuser.sh` bash script in the `scripts`
-subfolder of this repository. Just pass output filename of the private key and
+To automate this workflow there is a `newuser.sh` bash script in the `scripts`
+subfolder of this repository. Just pass a filename for the private key and
 certifate as the first argument and follow the steps.
 
 ```sh
@@ -93,7 +93,7 @@ stateOrProvinceName   :ASN.1 12:'NRW'
 localityName          :ASN.1 12:'Bielefeld'
 organizationName      :ASN.1 12:'mainorg.health-ledger.de'
 organizationalUnitName:ASN.1 12:'Versicherung'
-commonName            :ASN.1 12:'Hans M\0xFFFFFFC3\0xFFFFFF83\0xFFFFFFC2\0xFFFFFFBCller'
+commonName            :ASN.1 12:'Hans Müller'
 Certificate is to be certified until May  6 00:03:19 2118 GMT (36500 days)
 Sign the certificate? [y/n]:y
 
@@ -102,3 +102,27 @@ Sign the certificate? [y/n]:y
 ```
 
 ## Chaincode deployment
+For the deployment of chaincode to health-ledger network, the nodejs scripts in
+the folder `deploy-chaincode` can be used.
+
+```sh
+Cems-MBP-5:deploy-chaincode cem$ node deploy.js ../testchaincode/ fabcar
+info: [packager/Node.js]: packaging Node Chaincode from ../testchaincode/
+{ success: true,
+  txId:
+   TransactionID {
+     _nonce: <Buffer 16 37 6e 7d d0 6f e8 18 51 bb dd df 1a 6d 8a f4 82 8a d1 cc 77 e8 6c fb>,
+     _transaction_id: 'e46e70d8558c477cb670cf20782163ad246a7f0ce5c8c67312904fc03951c0f9',
+     _admin: true },
+  install:
+   [ [ [Object] ],
+     { header: [ByteBuffer],
+       payload: [ByteBuffer],
+       extension: [ByteBuffer] } ],
+  proposals:
+   [ [ [Object] ],
+     { header: [ByteBuffer],
+       payload: [ByteBuffer],
+       extension: [ByteBuffer] } ],
+  transaction: { status: 'SUCCESS', info: '' } }
+```
