@@ -32,6 +32,8 @@ The health-ledger network is reachable on `health-ledger.westeurope.cloudapp.azu
 * Peer 0 - port :7051 / EventHub :7053
 * Orderer - port :7050
 
+To simplify the interaction with the network, there is a client wrapper (`ledgerclient.js`) in the `deploy-chaincode` subfolder and several scripts to demonstrate the usage. See also section [Chaincode deployment](#chaincode-deployment) for further information.
+
 ## Certificates
 For the interaction with the hyperledger network, each user needs a private key
 and a corresponding certificate signed by an hyperledger peer certificate
