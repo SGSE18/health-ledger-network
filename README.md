@@ -46,8 +46,8 @@ health-ledger users, while the first one is reserved for the orderer. The
 and will be used to sign new participants for the network. The Fabric Framework
 requires a private key generated with the elliptic curve algorithm.
 
-### New user work flow
-In Order to create a new key and a certificate, signed by the
+### New user workflow
+In order to create new keys and certificates, signed by the
 `mainorg.health-ledger.de` organization, we can leverage the `openssl` command
 line tool.
 
