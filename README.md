@@ -27,6 +27,11 @@ $ cd hyperledger
 $ ./teardown.sh
 ```
 
+### Network Structure
+The health-ledger network is reachable on `health-ledger.westeurope.cloudapp.azure.com` and consists of following Nodes.
+* Peer 0 - port :7051 / EventHub :7053
+* Orderer - port :7050
+
 ## Certificates
 For the interaction with the hyperledger network, each user needs a private key
 and a corresponding certificate signed by an hyperledger peer certificate
