@@ -109,8 +109,21 @@ Sign the certificate? [y/n]:y
 ```
 
 ## Chaincode deployment
-For the deployment of chaincode to health-ledger network, the nodejs scripts in
+For the deployment of chaincodes to health-ledger network, the nodejs scripts in
 the folder `deploy-chaincode` can be used.
+
+The scripts are configured to connect to the Azure hosted network. If you want to use them on 
+your local or other network, see section [Ledger Client](#ledger-client).
+
+### Usage
+`node deploy.js <path> <chaincodeId> [version] [type]`
+
+* `path` - mandatory: relative or full path to the folder, containing the chaincode script
+* `chaincodeId` - mandatory: unique id used to deploy and later to interact with on the network
+* `version` - optional: the version of the chaincode defaults to `v1`
+* `type` - optional: chaincode type defaults to `node`
+
+### Example
 
 ```sh
 Cems-MBP-5:deploy-chaincode cem$ node deploy.js ../testchaincode/ fabcar
@@ -133,3 +146,88 @@ info: [packager/Node.js]: packaging Node Chaincode from ../testchaincode/
        extension: [ByteBuffer] } ],
   transaction: { status: 'SUCCESS', info: '' } }
 ```
+
+## Ledger Client
+In order to simplify the interaction with the Hyperledger peers and orderers, the `ledgerclient.js` 
+script in the folder [deploy-chaincode](deploy-chaincode/) wraps the `fabric-client` functionality 
+and provides a simplified application interface.
+
+### Configuration
+The `LedgerClient` class is instantiated by passing a configuration object to the constructor. The 
+configuration contains information of the signing user and optionally an admin, the network endpoints
+and the channel. Each instance of the `LedgerClient` is bound to this configuration, so for the usage
+in a multi session environment like a REST-API, you need a new intance for each requesting user.
+
+The admin identity is only required for administrative tasks like deploying and instantiating 
+chaincodes or modifying channel configurations.
+
+```javascript
+var config = {
+   channel: "mychannel",
+   orderers: [
+      "grpc://localhost:7050"
+   ],
+   peers: [
+      "grpc://localhost:7051"
+   ],
+   hubs: [
+      "grpc://localhost:7053"
+   ],
+   identity: {
+      username: "user1",
+      mspid: "MainOrgMSP",
+      key: "-----BEGIN PRIVATE KEY-----\n .... \n-----END PRIVATE KEY-----",
+      cert: "-----BEGIN CERTIFICATE-----\n .... \n-----END CERTIFICATE-----"
+   }
+   adminIdentity: {
+      mspid: "MainOrgMSP",
+      key: "-----BEGIN PRIVATE KEY-----\n .... \n-----END PRIVATE KEY-----",
+      cert: "-----BEGIN CERTIFICATE-----\n .... \n-----END CERTIFICATE-----"
+   }
+}
+```
+
+### Usage
+
+```javascript
+const LedgerClient = require('./ledgerclient.js')
+
+var config = { } //see section configuration
+
+...
+async function doSomething() {
+  var client = new LedgerClient(config);
+  await client.initFromConfig();
+  
+  try {
+    let response = await client.queryByChaincode('fabcar', 'queryAllCars');
+    console.log(response);
+  }
+  catch(e){
+    console.log(e);
+  }
+}
+
+```
+
+### API Reference
+
+* `constructor(config)` - creates a new LedgerClient instance with the given configuration. 
+  
+  Parameters:
+  * `config` -  See [configuration](#configuration) for further information.
+  
+  Returns:
+* `initFromConfig()` - the intialization of the client happens asynchronsly, this method 
+has to be called after instantiation.
+
+  Parameters:
+  
+  Returns: `Promise` - handler for async action
+* `newTransactionID(admin=false)` - creates a new transaction id to use with transaction 
+proposals.
+  
+  Parameters:
+  * `admin`- should the transaction id created by the admin or user identity
+  
+  Returns: `TransactionId` - object with transaction id and originating identity
