@@ -1,0 +1,14 @@
+{
+  "name": "health.chaincode.test",
+  "version": "1.0.0",
+  "description": "mocks hyperledger and tests healtledger chaincode ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Cem Basoglu",
+  "license": "MIT",
+  "dependencies": {
+    "mocha": "^5.2.0"
+  }
+}

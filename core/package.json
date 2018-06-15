@@ -1,7 +1,7 @@
 {
-  "name": "deploy-chaincode",
+  "name": "health-ledger-network",
   "version": "1.0.0",
-  "description": "deploys chaincode to hyperledger",
+  "description": "library for interacting with health-ledger network",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

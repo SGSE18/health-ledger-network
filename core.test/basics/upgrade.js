@@ -1,5 +1,6 @@
 'use strict';
-var Client = require('./ledgerclient');
+
+const Network = require('health-ledger-network');
 var config = {
    channel: "mychannel",
    orderers: [
@@ -25,12 +26,10 @@ var config = {
 }
 
 async function deploy(path, chaincodeId, version, type) {
-  let client = new Client(config);
-
-  await client.initFromConfig();
+  let client = await Network.BaseClient.initFromConfig(config);
 
   try {
-    let response = await client.autoInstallChaincode(path, chaincodeId, version, type);
+    let response = await client.autoUpgradeChaincode(path, chaincodeId, version, type);
     console.log(response);
   }
   catch(e) {
@@ -40,18 +39,15 @@ async function deploy(path, chaincodeId, version, type) {
 
 var args = process.argv.slice(2);
 
-if(args.length < 2 || args.length > 4){
-  console.log("\nUsage: deploy <path> <name> [version] [type]\n\n")
+if(args.length < 3 || args.length > 4){
+  console.log("\nUsage: upgrade <path> <name> <version> [type]\n\n")
   return;
 }
 
 let path = args[0]
 let name = args[1]
-let version = 'V1';
+let version = args[2];
 let type = 'node';
-
-if(args.length > 2)
-  version = args[2];
 
 if(args.length > 3)
   type = args[3];

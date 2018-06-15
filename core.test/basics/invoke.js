@@ -1,6 +1,6 @@
 'use strict';
 
-var Client = require('./ledgerclient');
+const Network = require('health-ledger-network');
 var config = {
    channel: "mychannel",
    orderers: [
@@ -22,13 +22,11 @@ var config = {
 
 
 async function invoke() {
-  let client = new Client(config);
-
-  await client.initFromConfig();
+  let client = await Network.BaseClient.initFromConfig(config);
 
   try {
-    await client.autoSendTransaction('fabcar', 'initLedger', ['']);
-    let response = await client.queryByChaincode('fabcar', 'queryAllCars');
+    await client.autoSendTransaction('healthledger', 'test', ['']);
+    let response = await client.queryByChaincode('healthledger', 'queryAllCars');
     console.log(response);
   }
   catch(e){

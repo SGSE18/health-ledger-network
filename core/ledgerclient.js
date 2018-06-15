@@ -4,7 +4,7 @@ var Client = require('fabric-client');
 var path = require('path');
 var fs = require('fs');
 
-module.exports = class LedgerClient {
+module.exports = class BaseClient {
 
   constructor(config){
     this.config = config;
@@ -19,21 +19,25 @@ module.exports = class LedgerClient {
 
   }
 
-  async initFromConfig() {
-    if(this.config == null)
+  static async initFromConfig(config) {
+    if(config == null)
       throw new Error("no configuration set.")
 
-    for (let peer of this.config.peers)
-      this.addPeer(peer);
+    let client = new BaseClient(config)
 
-    for (let orderer of this.config.orderers)
-      this.addOrderer(orderer);
+    for (let peer of config.peers)
+      client.addPeer(peer);
 
-    if(this.config.adminIdentity)
-      this.setAdminIdentity(this.config.adminIdentity);
+    for (let orderer of config.orderers)
+      client.addOrderer(orderer);
 
-    if(this.config.identity)
-      await this.setIdentity(this.config.identity);
+    if(config.adminIdentity)
+      client.setAdminIdentity(config.adminIdentity);
+
+    if(config.identity)
+      await client.setIdentity(config.identity);
+
+    return client
   }
 
   addPeer(host) {
@@ -177,6 +181,33 @@ module.exports = class LedgerClient {
     response.install = await this.installChaincode(path, chaincodeId, version, type);
 
     response.proposals = await this.sendInstantiateProposal(response.txId, chaincodeId, version, type);
+    response.transaction = await this.sendTransaction(response.proposals);
+
+    await this.checkTransactionEvent(response.txId);
+
+    response.success = true;
+    return response;
+  }
+
+  sendUpgradeProposal(txId, chaincodeId, version = 'v1', type = 'node') {
+    return this.channel.sendUpgradeProposal({
+      targets: this.channel.getPeers(),
+      chaincodeType: type,
+      chaincodeId: chaincodeId,
+      chaincodeVersion: version,
+      txId: txId
+    })
+  }
+
+  async autoUpgradeChaincode(path, chaincodeId, version = 'v1', type = 'node') {
+    let response = {
+      success: false,
+      txId: this.client.newTransactionID(true),
+    };
+
+    response.install = await this.installChaincode(path, chaincodeId, version, type);
+
+    response.proposals = await this.sendUpgradeProposal(response.txId, chaincodeId, version, type);
     response.transaction = await this.sendTransaction(response.proposals);
 
     await this.checkTransactionEvent(response.txId);
