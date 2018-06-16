@@ -67,7 +67,7 @@ let Chaincode = class {
 
           let treatment = JSON.parse(args.params[1]);
 
-          payload = await ledger.updateRequest(args.params[0], treatment);
+          payload = await ledger.postTreatment(args.params[0], treatment);
           break;
         default:
           throw new Error('unknown function');
