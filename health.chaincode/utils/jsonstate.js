@@ -7,19 +7,48 @@ module.exports = class {
     this.stub = stub;
   }
 
-  async getState(key) {
+  async get(key) {
     let result = await this.stub.getState(key);
 
-    if (!result || result.toString().length <= 0)
+    console.info(`state.get: ${key} => ${result.toString()}`);
+
+    if (result == null || result.toString().length <= 0)
       return null;
 
     return JSON.parse(result.toString());
   }
 
-  async putState(key, obj) {
+  async put(key, obj) {
     let sObj = JSON.stringify(obj);
 
-    await stub.putState(key, Buffer.from(sObj));
+    console.info(`state.put: ${key} => ${sObj}`);
+
+    await this.stub.putState(key, Buffer.from(sObj));
+  }
+
+  async query(qry) {
+    let q = JSON.stringify(qry);
+
+    let result = await this.stub.getQueryResult(q);
+
+    let ret = [];
+    let next = {done: false}
+    while(next.done === false){
+      next = await result.next();
+
+      if(next.value && next.value.value.toString('utf8').length > 0){
+        let sObj = next.value.value.toString('utf8');
+
+        ret.push({
+          key: next.value.key,
+          value: JSON.parse(sObj)
+        });
+
+        console.info(`state.query: ${next.value.key} => ${sObj}`);
+      }
+    }
+
+    return ret;
   }
 
 }

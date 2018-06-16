@@ -24,9 +24,14 @@ var config = {
 async function invoke() {
   let client = await Network.BaseClient.initFromConfig(config);
 
+  let userInfo = {publicKey: "asdasd"};
+  let request = { id: 'test1', requester: 'Dein Arbeitgeber', requesterPublicKey: '4242', note: 'Krankschreibung einsehen', duration: 12, treatment: false, attestation: true, recipe: false }
+
   try {
-    await client.autoSendTransaction('healthledger', 'test', ['']);
-    let response = await client.queryByChaincode('healthledger', 'queryAllCars');
+    //await client.autoSendTransaction('healthledger', 'user.post', [JSON.stringify(userInfo)]);
+    await client.autoSendTransaction('healthledger', 'request.post', ['asdasd', JSON.stringify(request)]);
+
+    let response = await client.queryByChaincode('healthledger', 'request.get');
     console.log(response);
   }
   catch(e){

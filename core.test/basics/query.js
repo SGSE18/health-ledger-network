@@ -24,7 +24,7 @@ async function query() {
   let client = await Network.BaseClient.initFromConfig(config);
 
   try {
-    let response = await client.queryByChaincode('healthledger', 'queryAllCars');
+    let response = await client.queryByChaincode('healthledger', 'request.get');
     console.log(response);
   }
   catch(e){

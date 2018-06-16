@@ -77,6 +77,9 @@ module.exports = class BaseClient {
       args: params
     });
 
+    if(result[0].toString().length <= 0)
+      return null;
+
     return JSON.parse(result[0].toString());
   }
 
@@ -117,7 +120,7 @@ module.exports = class BaseClient {
       let handle = setTimeout(() => {
         hub.disconnect();
         reject(new Error('Trnasaction did not complete within 30 seconds'));
-      }, 3000);
+      }, 30000);
 
       let txIds = txId.getTransactionID();
 

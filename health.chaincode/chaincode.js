@@ -14,31 +14,74 @@ let Chaincode = class {
 
   async Invoke(stub) {
     console.info('=========== Invoke chaincode ===========');
+    let args = stub.getFunctionAndParameters();
+
     let identity = new shim.ClientIdentity(stub)
     let state = new jsonstate(stub);
 
     let ledger = new healthledger(identity, state)
 
-    switch(stub.fcn) {
-      case 'user.get':
-        payload = ledger.getUser();
-        break;
-      case 'user.post':
-        break;
-      case 'request.get':
-        break;
-      case 'request.post':
-        break;
-      case 'treatment.get':
-        break;
-      case 'treatment.post':
-        break;
-      case 'treatment.put':
-        break;
-    }
+    console.info(`function: ${args.fcn}`)
+    console.info(`params: ${args.params}`)
 
-    payload = payload ? Buffer.from(JSON.stringify(payload)) : payload
-    return shim.success(payload);
+    try {
+      let payload = null;
+
+      switch(args.fcn) {
+        case 'user.get':
+          payload = await ledger.getUser();
+          break;
+        case 'user.post':
+          if(!args.params || args.params.length != 1)
+            throw new Error('sufficient parameters');
+
+          let userInfo = JSON.parse(args.params[0]);
+
+          payload = await ledger.postUser(userInfo);
+          break;
+        case 'request.get':
+          payload = await ledger.getRequests();
+          break;
+        case 'request.post':
+          if(!args.params || args.params.length != 2)
+            throw new Error('sufficient parameters');
+
+          let request = JSON.parse(args.params[1]);
+
+          payload = await ledger.postRequest(args.params[0], request);
+          break;
+        case 'request.put':
+          if(!args.params || args.params.length != 3)
+            throw new Error('sufficient parameters');
+
+          let requestResult = JSON.parse(args.params[2]);
+
+          payload = await ledger.updateRequest(args.params[0], args.params[1], requestResult);
+          break;
+        case 'treatment.get':
+          payload = await ledger.getTreatments();
+          break;
+        case 'treatment.post':
+          if(!args.params || args.params.length != 2)
+            throw new Error('sufficient parameters');
+
+          let treatment = JSON.parse(args.params[1]);
+
+          payload = await ledger.updateRequest(args.params[0], treatment);
+          break;
+        default:
+          throw new Error('unknown function');
+          break;
+      }
+
+      console.info(`result: ${JSON.stringify(payload)}`);
+
+      payload = payload ? Buffer.from(JSON.stringify(payload)) : payload
+      return shim.success(payload);
+
+    } catch(err) {
+      return shim.error(err);
+    }
   }
 
 };
