@@ -1,1 +1,14 @@
-core/package.json
+{
+  "name": "health-ledger-network",
+  "version": "1.0.0",
+  "description": "library for interacting with health-ledger network",
+  "main": "core/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cem Basoglu",
+  "license": "MIT",
+  "dependencies": {
+    "fabric-client": "^1.1.0"
+  }
+}
