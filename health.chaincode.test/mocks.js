@@ -36,7 +36,7 @@ class MockState {
       }
 
       if(result != null)
-        results.push({ Key: serial, Value: result});
+        results.push({ key: serial, value: result});
     }
 
     return results;
