@@ -148,4 +148,45 @@ describe('treatments', () => {
       assert(treatments[3].id == 1338, "id is not 1338");
     });
   });
+
+  describe('redeem/post()', () => {
+    it('should fail to redeem treatments as wrong user type', async () => {
+      let ledger = new healthledger(mocks.identityPatient, mocks.state)
+      var error = null
+      try {
+        var treatments = await ledger.redeemTreatment("asdhasd", 1);
+      }
+      catch(err) {
+        error = err
+      }
+      assert(error != null, "No error!")
+    });
+
+    it('should redeem a treatment', async () => {
+      let ledger = new healthledger(mocks.identityApotheke, mocks.state)
+      
+      var error = null
+      try {
+        var treatments = await ledger.redeemTreatment("asdhasd", 1);
+      }
+      catch(err) {
+        error = err
+      }
+      assert(error == null, "No error!")
+    });
+
+    it('should fail to redeem an already redeemed treatment', async () => {
+      let ledger = new healthledger(mocks.identityApotheke, mocks.state)
+      
+      var error = null
+      try {
+        var treatments = await ledger.redeemTreatment("asdhasd", 1);
+      }
+      catch(err) {
+        error = err
+      }
+      assert(error != null, "No error!")
+    });
+
+  });
 });
