@@ -8,7 +8,8 @@ class MockState {
                    { id: 'xwv', requester: 'Facebook', requesterPublicKey: '666', note: 'Vollstaendiger Einblick', duration: 99999999, treatment: true, attestation: true, recipe: true, Result: {rejected: true, reason: 'Warum?', treatment: []} }],
         treatments: [{id: "1337", category: 'Krank', diagnose: "Erkältung", prescription:null , attestation: null },
                      {id: "1337", category: 'Krank', diagnose: "Grippe", prescription:{ drug: 'abc', patient_name: 'Mr. Nice', doctor_name: 'Dr IQ', until_date: new Date(), note: 'Nicht alle auf einmal essen', redeemed: true} , attestation: null },
-                     {id: "1337", category: 'Vorsorge', diagnose: "Blutabnahme", prescription:{ drug: 'abc', patient_name: 'Mr. Nice', doctor_name: 'Dr IQ', until_date: new Date(), note: 'Nicht alle auf einmal essen', redeemed: true} , attestation: { is_incapable: true, incapable_until: new Date(), incapable_since: new Date()} }]
+                     {id: "1337", category: 'Vorsorge', diagnose: "Blutabnahme", prescription:{ drug: 'abc', patient_name: 'Mr. Nice', doctor_name: 'Dr IQ', until_date: new Date(), note: 'Nicht alle auf einmal essen', redeemed: true} , attestation: { is_incapable: true, incapable_until: new Date(), incapable_since: new Date()} }],
+        redeemedTreatments: []
       }
     };
   }

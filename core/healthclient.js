@@ -26,7 +26,7 @@ module.exports = class HealthClient {
    * Creates the user with the given userInfo and the "calling" certificate
    */
   async postUser(userInfo) {
-    await this.client.autoSendTransaction(chaincodeId, 'user.post', [JSON.stringify(userInfo)]);
+    return await this.client.autoSendTransaction(chaincodeId, 'user.post', [JSON.stringify(userInfo)]);
   }
 
   /*
@@ -58,10 +58,17 @@ module.exports = class HealthClient {
   }
 
   /*
-   * adds the treatment to the user with the given publickey
+   * adds the treatment of the user with the given publickey
    */
   async postTreatment(publicKey, treatment) {
     return await this.client.autoSendTransaction(chaincodeId, 'treatment.post', [publicKey, JSON.stringify(treatment)]);
+  }
+
+  /*
+   * redeems the treatment of the user with the given publickey / treatmentId
+   */
+  async redeemTreatment(publicKey, treatmentId) {
+    return await this.client.autoSendTransaction(chaincodeId, 'treatment.redeem', [publicKey, treatmentId]);
   }
 
 }

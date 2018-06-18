@@ -33,7 +33,7 @@ let Chaincode = class {
           break;
         case 'user.post':
           if(!args.params || args.params.length != 1)
-            throw new Error('sufficient parameters');
+            throw new Error('insufficient parameters');
 
           let userInfo = JSON.parse(args.params[0]);
 
@@ -44,7 +44,7 @@ let Chaincode = class {
           break;
         case 'request.post':
           if(!args.params || args.params.length != 2)
-            throw new Error('sufficient parameters');
+            throw new Error('insufficient parameters');
 
           let request = JSON.parse(args.params[1]);
 
@@ -52,7 +52,7 @@ let Chaincode = class {
           break;
         case 'request.put':
           if(!args.params || args.params.length != 3)
-            throw new Error('sufficient parameters');
+            throw new Error('insufficient parameters');
 
           let requestResult = JSON.parse(args.params[2]);
 
@@ -63,11 +63,17 @@ let Chaincode = class {
           break;
         case 'treatment.post':
           if(!args.params || args.params.length != 2)
-            throw new Error('sufficient parameters');
+            throw new Error('insufficient parameters');
 
           let treatment = JSON.parse(args.params[1]);
 
           payload = await ledger.postTreatment(args.params[0], treatment);
+          break;
+          case 'treatment.redeem':
+          if(!args.params || args.params.length != 2)
+            throw new Error('insufficient parameters');
+
+          payload = await ledger.redeemTreatment(args.params[0], args.params[1]);
           break;
         default:
           throw new Error('unknown function');

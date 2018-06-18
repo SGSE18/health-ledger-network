@@ -74,7 +74,8 @@ module.exports = class {
     }
 
     if(this.UserType == "Patient")
-      user.treatments = []
+      user.treatments = [],
+      user.redeemedTreatments = []
 
     await this.state.put(this.UserId, user);
   }
@@ -129,7 +130,7 @@ module.exports = class {
   }
 
   /*
-   * adds the treatment to the user with the given publickey
+   * adds the treatment of the user with the given publickey
    */
   async postTreatment(publicKey, treatment) {
     if(this.UserType !== "Arzt")
@@ -139,6 +140,25 @@ module.exports = class {
     let user = result.value;
 
     user.treatments.push(treatment);
+
+    return await this.state.put(result.key, user);
+  }
+
+  /*
+   * redeems the treatment of the user with the given publickey / treatmentId
+   */
+  async redeemTreatment(publicKey, treatmentId) {
+    if(this.UserType !== "Apotheke")
+      throw new Error("Only pharmacies can redeem treatments");
+
+    let result = await this.getUserByPublicKey(publicKey);
+    let user = result.value;
+
+    if(user.redeemedTreatments.includes(treatmentId)) {
+      throw new Error("Treatment already redeemed");
+    }
+
+    user.redeemedTreatments.push(treatmentId);
 
     return await this.state.put(result.key, user);
   }
