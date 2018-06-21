@@ -154,6 +154,9 @@ module.exports = class {
     let result = await this.getUserByPublicKey(publicKey);
     let user = result.value;
 
+    if(user.redeemedTreatments == null)
+      user.redeemedTreatments = []
+
     if(user.redeemedTreatments.includes(treatmentId)) {
       throw new Error("Treatment already redeemed");
     }
