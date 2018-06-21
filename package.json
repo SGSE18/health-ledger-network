@@ -1,6 +1,6 @@
 {
   "name": "health-ledger-network",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "library for interacting with health-ledger network",
   "main": "core/index.js",
   "scripts": {
